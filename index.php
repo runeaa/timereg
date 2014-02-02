@@ -19,16 +19,18 @@ include './include/header.php';
         <p>Registrer deg i dag, og få tilgang til timeregistreringen!</p>
     </div>
     <div class="col-lg-4">
-        <h3>Enkelt</h3>
-        <p>
-            Hele fokuset med denne siden omhandler det å gjøre registrering av timer så enkelt som mulig. </p>
-    </div>
-    <div class="col-lg-4">
         <h3>Tips</h3>
         <p>
-            Har du tips, eller noe du ønsker skulle vært tilgjengelig på denne siden? 
+            Hele fokuset med denne siden omhandler det å gjøre registrering av timer så enkelt som mulig. 
+            Så har du tips, eller noe du ønsker skulle vært tilgjengelig på denne siden? 
             Send en mail til <a href ="mailto:outflanked@outlook.com">Outflanked</a> så kan det hende at
-            det blir en realitet.</p>
+            det blir en realitet. Det settes pris på alle forslag som kan være med på å gjøre siden bedre.</p>
+    </div>
+    <div class="col-lg-4">
+        <h3>Utvikling</h3>
+        <p>
+            Denne siden er fortsatt under utvikling, og noen funksjoner er ikke implementert enda. Oppdateringer vil 
+        komme på denne siden.</p>
     </div>
 </div>
 <?php

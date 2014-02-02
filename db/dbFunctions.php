@@ -12,7 +12,7 @@ class functions {
         }
         return $conn;
     }
- 
+
     function closeDb($conn) {
         mysqli_close($conn);
     }
@@ -120,7 +120,7 @@ class functions {
             $stmnt->close();
         }
         $message = 'Passordet ditt er ' . $pass;
-        mail($userEmail, 'Resettpassord', $message, 'timereg@runeaasv.tihlde.org');
+        mail($userEmail, 'Innloggings informasjon', $message);
 
         if ($change) {
             header('location: ../skrivPass.php');

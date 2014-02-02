@@ -20,7 +20,7 @@ function checkLogin() {
         <meta charset="UTF-8">
         
         <link href="res/dist/css/bootstrap.css" rel="stylesheet">
-        <link rel="icon" href="../res/icon/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="res/icon/favicon.ico" type="image/x-icon">
         <title>Clocktime</title>
     </head>
     <body>

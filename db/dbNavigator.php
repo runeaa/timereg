@@ -1,5 +1,5 @@
 <?php
-include_once './database_info.php';
+include_once '../../database_info.php';
 include_once './dbFunctions.php';
 
 if (isset($_POST['action'])) {
