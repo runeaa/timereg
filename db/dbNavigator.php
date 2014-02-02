@@ -10,7 +10,7 @@ if (isset($_POST['action'])) {
         $b = $a -> connectDb($host, $user, $password, $database);
         $a ->checkLogin($b);
         $a -> closeDb($b);
-        break;
+        break; 
     
     case 'startTime':
         $a = new functions();

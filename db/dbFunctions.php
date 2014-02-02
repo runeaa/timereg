@@ -12,7 +12,7 @@ class functions {
         }
         return $conn;
     }
-
+ 
     function closeDb($conn) {
         mysqli_close($conn);
     }
