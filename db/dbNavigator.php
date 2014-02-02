@@ -22,7 +22,7 @@ if (isset($_POST['action'])) {
     case 'endTime':
         $a = new functions();
         $b = $a -> connectDb($host, $user, $password, $database);
-        $a ->endTime($b);
+        $a -> endTime($b);
         $a -> closeDb($b);
         break;
     

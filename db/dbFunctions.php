@@ -97,11 +97,16 @@ class functions {
         $time = $this-> getDateTime(false);
         session_start();
         $comment = $_POST['comment'];
-
+        echo $check;
+        echo $comment;
+        echo $time;
+        echo $_SESSION['user'];
+        
+//        UPDATE timeliste set checkOut = '2014-02-02 20:03:21', comment = 'tester litte' where username = 'Per' and DATE(checkIn) = '2014-02-02';
         if ($stmnt = $conn->prepare("UPDATE timeliste set checkOut = ?, comment = ? where username = '" . $_SESSION['user'] . "' and DATE(checkIn) = ?")) {
             $stmnt->bind_param('sss', $time, $comment, $check);
             $stmnt->execute();
-            $stmnt->close();
+            $stmnt->close();    
             header('location: ../registration_success.php');
         }
     }
