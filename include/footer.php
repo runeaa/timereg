@@ -13,7 +13,7 @@
                         Contact: <a href ="mailto:outflanked@outlook.com">Outflanked</a>
                     </p>
         </div>
-        <div class ="collapse navbar-collapse" id="navFooterCollapse">
+        <div class ="collapse navbar-collapse">
             <div class ="navbar navbar-default navbar-fixed-bottom">
                 <div class="navbar-inner navbar-content-center">
                     <p class="navbar-text navbar-left">Outflanked © 2014
