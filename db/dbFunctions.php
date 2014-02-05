@@ -62,14 +62,14 @@ class functions {
     function checkLogin($conn) {
         $userName = $_POST['user'];
         $userPassword = $_POST['password'];
-        $inputPass = pbkdf2("SHA256", $userPassword, $salt, 1000, 50);
-
+        $pass = null;
+       $salt = null;
         if ($stmnt = $conn->prepare("SELECT password, salt from user where username = ?")) {
             $stmnt->bind_param('s', $userName);
             $stmnt->execute();
             $stmnt->bind_result($pass, $salt);
-
             if ($stmnt->fetch()) {
+            $inputPass = pbkdf2('SHA256', $userPassword, $salt, 1000, 50);
                 if ($pass == $inputPass) {
                     session_start();
                     $_SESSION['user'] = $userName;
