@@ -1,5 +1,7 @@
 <?php
 
+include_once './password.php';
+
 class functions {
 
     function connectDb($host, $user, $password, $database) {
@@ -60,16 +62,21 @@ class functions {
     function checkLogin($conn) {
         $userName = $_POST['user'];
         $userPassword = $_POST['password'];
-        echo 'user ' . $userName;
-        if ($stmnt = $conn->prepare("SELECT username from user where username = ? and password = ?")) {
-            $stmnt->bind_param('ss', $userName, $userPassword);
+        $inputPass = pbkdf2("SHA256", $userPassword, $salt, 1000, 50);
+        
+        if ($stmnt = $conn->prepare("SELECT password, salt from user where username = ?")) {
+            $stmnt->bind_param('s', $userName);
             $stmnt->execute();
-            $stmnt->bind_result($result);
+            $stmnt->bind_result($pass, $salt);
 
             if ($stmnt->fetch()) {
-                session_start();
-                $_SESSION['user'] = $userName;
-                header('location: ../login_success.php');
+                if ($pass == $inputPass) {
+                    session_start();
+                    $_SESSION['user'] = $userName;
+                    header('location: ../login_success.php');
+                } else {
+                    header('location:../index.php');
+                }
             } else {
                 header('location:../index.php');
             }
@@ -79,12 +86,12 @@ class functions {
 
     function startTime($conn) {
         $end = false;
-        $time = $this -> getDateTime($end);
-        $ip = $this -> get_client_ip();
+        $time = $this->getDateTime($end);
+        $ip = $this->get_client_ip();
         session_start();
         $username = $_SESSION['user'];
 
-        if ($stmnt = $conn-> prepare("INSERT into timeliste(username, checkIn, checkOut, ip, comment) VALUES ('" . $_SESSION['user'] . "', ?, '0000-00-00 00:00:00', ?, '')")) {
+        if ($stmnt = $conn->prepare("INSERT into timeliste(username, checkIn, checkOut, ip, comment) VALUES ('" . $_SESSION['user'] . "', ?, '0000-00-00 00:00:00', ?, '')")) {
             $stmnt->bind_param('ss', $time, $ip);
             $stmnt->execute();
             $stmnt->close();
@@ -93,20 +100,19 @@ class functions {
     }
 
     function endTime($conn) {
-        $check = $this-> getDateTime(true);
-        $time = $this-> getDateTime(false);
+        $check = $this->getDateTime(true);
+        $time = $this->getDateTime(false);
         session_start();
         $comment = $_POST['comment'];
         echo $check;
         echo $comment;
         echo $time;
         echo $_SESSION['user'];
-        
-//        UPDATE timeliste set checkOut = '2014-02-02 20:03:21', comment = 'tester litte' where username = 'Per' and DATE(checkIn) = '2014-02-02';
+
         if ($stmnt = $conn->prepare("UPDATE timeliste set checkOut = ?, comment = ? where username = '" . $_SESSION['user'] . "' and DATE(checkIn) = ?")) {
             $stmnt->bind_param('sss', $time, $comment, $check);
             $stmnt->execute();
-            $stmnt->close();    
+            $stmnt->close();
             header('location: ../registration_success.php');
         }
     }
@@ -118,7 +124,7 @@ class functions {
             $stmnt->execute();
             $stmnt->bind_result($col1);
             if ($stmnt->fetch()) {
-                $pass = $col1;
+                $pass = "Beklager, denne funksjonen er for tiden ute av drift. Vennlist kontakt admin.";
                 $change = true;
             }
             echo $pass;
@@ -149,16 +155,18 @@ class functions {
     function newUser($conn) {
         $userName = $_POST['userName'];
         $userPassword = $_POST['userPassword'];
+        $salted = base64_encode(mcrypt_create_iv(PBKDF2_SALT_BYTE_SIZE, MCRYPT_DEV_URANDOM));
+        $hasPassword = pbkdf2('SHA256', $userPassword, $salted, 1000, 50);
         $userEmail = $_POST['userEmail'];
-        if (($this-> checkUser($userName, $conn) == false && ($stmnt2 = $conn->prepare("insert into user (username, password, email, status) values(?, ?, ?,1);")))) {
-            $stmnt2->bind_param('sss', $userName, $userPassword, $userEmail);
+
+        if (($this->checkUser($userName, $conn) == false && ($stmnt2 = $conn->prepare("insert into user (username, password, salt, email, status) values(?, ?, ?, ?, 0);")))) {
+            $stmnt2->bind_param('ssss', $userName, $hasPassword, $salted, $userEmail);
             $stmnt2->execute();
-            $stmnt2->bind_result($result);
             $stmnt2->close();
             header('location: ../reg_ok.php');
-        }else{
+        } else {
             header('location: ../index.php');
         }
-        mysqli_close($conn);
     }
+
 }
