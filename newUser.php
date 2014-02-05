@@ -13,7 +13,7 @@ include './include/header.php';
                 <div class="form-group">
                     <label for="brukernavn" class="col-sm-4 control-label">Ønsket brukernavn:</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" name="userName" placeholder="Brukkernavn">
+                        <input type="text" class="form-control" name="userName" placeholder="Brukernavn">
                     </div>
                 </div>
 
@@ -28,14 +28,13 @@ include './include/header.php';
                     <label for="passord" class="col-sm-4 control-label">Skriv passord:</label>
                     <div class="col-sm-8"> 
                         <input type="password" class="form-control" name="userPassword" id="password" placeholder="passord">
-                        <p style="color: red">OBS; les informasjonen.</p>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="gPassord" class="col-sm-4 control-label">Gjennta passord:</label>
                     <div class="col-sm-8">
-                        <input type="password" class="form-control" id="password2" placeholder="passord">
+                        <input type="password" class="form-control" name="userPasswordCheck" placeholder="passord">
                     </div>
                 </div>
                 
@@ -47,8 +46,11 @@ include './include/header.php';
     </div>
     <div class="col-lg-6">
         <h3>Passordsikkerhet</h3>
-        <p>Grunnet usikret lagring av passord anbefales det at man ikke bruker passord som brukes 
-        på andre sider. Dette gjelder særdeles passord som brukes på nettbank/paypal.</p>
+        <p>Det anbefales ikke å bruke passord som benyttes på andre sider. 
+            Dette gjelder særdeles passord som brukes på nettbank/paypal. Lagringen
+        av passord har nå blitt gjort sikrere ved å benytte salting og hashing. Derfor 
+        kan du føle deg trygg på at andre ikke vil få tak i passordet ditt, hvertfall fra
+        vår ende.</p>
     </div>
 </div>
 <?php

@@ -6,7 +6,7 @@ include './include/header.php';
         <div class="jumbotron ">
             <div class="pager">
                 <h1>Registrer dine arbeidstimer</h1>
-                <p>Logg inn, og logg timene dine kjapt og enkelt!</p>
+                <p>Logg inn, og logg timene dine kjapt, trygt, og enkelt!</p>
                 <p><a class="btn btn-primary btn-lg" role="button" href="login.php">Logg inn</a></p>
             </div>
         </div>
@@ -31,6 +31,7 @@ include './include/header.php';
         <p>
             Denne siden er fortsatt under utvikling, og noen funksjoner er ikke implementert enda. Oppdateringer vil 
         komme på denne siden.</p>
+        <p>Passord blir nå lagret på en sikker måte. Selv med ny og trygg lagring er det viktig å lese informasjonen når man registrer ny bruker</p>
     </div>
 </div>
 <?php

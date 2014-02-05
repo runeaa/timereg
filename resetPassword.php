@@ -23,11 +23,9 @@ include './include/header.php';
     </div>
     <div class="col-lg-6">
         <h3>Info</h3>
-        <p>Passordet lagres i klartekst, og derfor vil du få passordet tilsendt 
-            på mail i klartekst. Dette er ikke optimalt for noen av partene og det
-        jobbes med bedre løsninger.</p>
-        <p>I fremtiden skal passordene sikres bedre, når det blir tilfellet vil 
-        brukerne bli bedt om å lage ett nytt passord</p>
+        <p>Dessvere fungerer ikke metoden for å resette passord. Det hjelper 
+            derfor ikke å bruke denne siden. Send mail til <a href="mailto:outflanked@outlook.com">outflanked@outlook.com</a>
+        eller ta kontakt med admin.</p>
     </div>
 </div>
 <?php

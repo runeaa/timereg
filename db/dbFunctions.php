@@ -63,7 +63,7 @@ class functions {
         $userName = $_POST['user'];
         $userPassword = $_POST['password'];
         $inputPass = pbkdf2("SHA256", $userPassword, $salt, 1000, 50);
-        
+
         if ($stmnt = $conn->prepare("SELECT password, salt from user where username = ?")) {
             $stmnt->bind_param('s', $userName);
             $stmnt->execute();
@@ -75,10 +75,10 @@ class functions {
                     $_SESSION['user'] = $userName;
                     header('location: ../login_success.php');
                 } else {
-                    header('location:../index.php');
+                    header('location: ../error.php');
                 }
             } else {
-                header('location:../index.php');
+                header('location: ../error.php');
             }
             $stmnt->close();
         }
@@ -125,16 +125,13 @@ class functions {
             $stmnt->bind_result($col1);
             if ($stmnt->fetch()) {
                 $pass = "Beklager, denne funksjonen er for tiden ute av drift. Vennlist kontakt admin.";
-                $change = true;
+                $message = 'Passordet ditt er ' . $pass;
+                mail($userEmail, 'Innloggings informasjon', $message);
+                header('location: ../skrivPass.php');
+            }else{
+                header('location: ../error.php');
             }
-            echo $pass;
             $stmnt->close();
-        }
-        $message = 'Passordet ditt er ' . $pass;
-        mail($userEmail, 'Innloggings informasjon', $message);
-
-        if ($change) {
-            header('location: ../skrivPass.php');
         }
     }
 
@@ -155,17 +152,22 @@ class functions {
     function newUser($conn) {
         $userName = $_POST['userName'];
         $userPassword = $_POST['userPassword'];
-        $salted = base64_encode(mcrypt_create_iv(PBKDF2_SALT_BYTE_SIZE, MCRYPT_DEV_URANDOM));
-        $hasPassword = pbkdf2('SHA256', $userPassword, $salted, 1000, 50);
-        $userEmail = $_POST['userEmail'];
+        $userPasswordCheck = $_POST['userPasswordCheck'];
+        if ($userPassword == $userPasswordCheck) {
+            $salted = base64_encode(mcrypt_create_iv(PBKDF2_SALT_BYTE_SIZE, MCRYPT_DEV_URANDOM));
+            $hasPassword = pbkdf2('SHA256', $userPassword, $salted, 1000, 50);
+            $userEmail = $_POST['userEmail'];
 
-        if (($this->checkUser($userName, $conn) == false && ($stmnt2 = $conn->prepare("insert into user (username, password, salt, email, status) values(?, ?, ?, ?, 0);")))) {
-            $stmnt2->bind_param('ssss', $userName, $hasPassword, $salted, $userEmail);
-            $stmnt2->execute();
-            $stmnt2->close();
-            header('location: ../reg_ok.php');
+            if (($this->checkUser($userName, $conn) == false && ($stmnt2 = $conn->prepare("insert into user (username, password, salt, email, status) values(?, ?, ?, ?, 0);")))) {
+                $stmnt2->bind_param('ssss', $userName, $hasPassword, $salted, $userEmail);
+                $stmnt2->execute();
+                $stmnt2->close();
+                header('location: ../reg_ok.php');
+            } else {
+                header('location: ../index.php');
+            }
         } else {
-            header('location: ../index.php');
+            header('location: ../error.php');
         }
     }
 

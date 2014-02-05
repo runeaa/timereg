@@ -19,7 +19,7 @@ include './include/header.php';
                 <div class="form-group">
                     <label for="bruker" class="col-sm-4 control-label">Brukernavn</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="user" placeholder="Brukkernavn">     
+                        <input type="text" class="form-control" name="user" placeholder="Brukernavn">     
                     </div>
                 </div>
 
@@ -34,8 +34,6 @@ include './include/header.php';
                 <button type="submit" name="submit" class="btn btn-default"> Logg inn</button>
                 </table>
             </form>
-
-            <a style="color:red;">Passord sendes, og lagres, i klartekst</a>
             <br>
             <br>
             <a href="resetPassword.php">Glemt passord?</a>
