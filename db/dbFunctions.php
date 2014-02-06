@@ -1,6 +1,6 @@
 <?php
 
-include_once './password.php';
+include_once 'password.php';
 
 class functions {
 
@@ -9,8 +9,6 @@ class functions {
         if ($conn->connect_errno) {
             echo'Connection to database failed, please try again later.';
             die();
-        } else {
-            echo 'Connected <br>';
         }
         return $conn;
     }
@@ -34,6 +32,7 @@ class functions {
         if ($out == true) {
             $time = date('Y-m-d', time());
         } else {
+            $hour = date("H", time());
             $time = date('Y-m-d H:i:s', time());
         }
         return $time;
@@ -63,13 +62,13 @@ class functions {
         $userName = $_POST['user'];
         $userPassword = $_POST['password'];
         $pass = null;
-       $salt = null;
+        $salt = null;
         if ($stmnt = $conn->prepare("SELECT password, salt from user where username = ?")) {
             $stmnt->bind_param('s', $userName);
             $stmnt->execute();
             $stmnt->bind_result($pass, $salt);
             if ($stmnt->fetch()) {
-            $inputPass = pbkdf2('SHA256', $userPassword, $salt, 1000, 50);
+                $inputPass = pbkdf2('SHA256', $userPassword, $salt, 1000, 50);
                 if ($pass == $inputPass) {
                     session_start();
                     $_SESSION['user'] = $userName;
@@ -96,6 +95,8 @@ class functions {
             $stmnt->execute();
             $stmnt->close();
             header('location:../registration_success.php');
+        } else {
+            header('location: ../error.php');
         }
     }
 
@@ -114,6 +115,8 @@ class functions {
             $stmnt->execute();
             $stmnt->close();
             header('location: ../registration_success.php');
+        } else {
+            header('location: ../error.php');
         }
     }
 
@@ -128,7 +131,7 @@ class functions {
                 $message = 'Passordet ditt er ' . $pass;
                 mail($userEmail, 'Innloggings informasjon', $message);
                 header('location: ../skrivPass.php');
-            }else{
+            } else {
                 header('location: ../error.php');
             }
             $stmnt->close();
@@ -168,6 +171,25 @@ class functions {
             }
         } else {
             header('location: ../error.php');
+        }
+    }
+
+    function getUserTime($conn) {
+        $array = array();
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $name = $_SESSION['user'];
+        if (($stmnt = $conn->prepare("select checkIn, checkOut from timeliste where username ='" . $name . "';"))) {
+            $stmnt->execute();
+            $stmnt-> bind_result($in, $out);
+            $i = 0;
+            while($stmnt ->fetch()){
+                $array[$i] = "Checkin: ".$in." checkout: ".$out;
+                $i++;
+            }
+            $stmnt -> close();
+            return $array;
         }
     }
 

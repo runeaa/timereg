@@ -65,6 +65,10 @@ include './include/header.php';
     </div>
 
     <div class="col-lg-4">
+        <h3>OBS</h3>
+        <p>Husk å logge ut den dagen du logger inn!</p>
+    </div>
+    <div class="col-lg-4">
         <?php echo team(); ?>
     </div>
 </div>
