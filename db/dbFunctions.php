@@ -4,8 +4,7 @@ include_once 'password.php';
 
 class functions {
 
-    function connectDb() {
-        include_once '../../database_info.php';
+    function connectDb($host, $user, $password, $database) {
         $conn = mysqli_connect($host, $user, $password, $database);
         if ($conn->connect_errno) {
             echo'Connection to database failed, please try again later.';
@@ -75,15 +74,18 @@ class functions {
         $userPassword = $_POST['password'];
         $pass = null;
         $salt = null;
-        if ($stmnt = $conn->prepare("SELECT password, salt from user where username = ?")) {
+        if ($stmnt = $conn->prepare("SELECT password, salt, status from user where username = ?")) {
             $stmnt->bind_param('s', $userName);
             $stmnt->execute();
-            $stmnt->bind_result($pass, $salt);
+            $stmnt->bind_result($pass, $salt, $status);
             if ($stmnt->fetch()) {
                 $inputPass = pbkdf2('SHA256', $userPassword, $salt, 1000, 50);
                 if ($pass == $inputPass) {
                     session_start();
                     $_SESSION['user'] = $userName;
+                    if($status == 1){
+                        $_SESSION['status'] = 1;
+                    }
                     header('location: ../login_success.php');
                 } else {
                     header('location: ../error.php');
