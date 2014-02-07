@@ -4,7 +4,8 @@ include_once 'password.php';
 
 class functions {
 
-    function connectDb($host, $user, $password, $database) {
+    function connectDb() {
+        include_once '../../database_info.php';
         $conn = mysqli_connect($host, $user, $password, $database);
         if ($conn->connect_errno) {
             echo'Connection to database failed, please try again later.';
