@@ -18,7 +18,9 @@ class functions {
     }
 
     function getSessionName() {
+        if(session_status() == PHP_SESSION_NONE){
         session_start();
+        }
         if (isset($_SESSION['user'])) {
             return $_SESSION['user'];
         } else {
@@ -33,7 +35,16 @@ class functions {
             $time = date('Y-m-d', time());
         } else {
             $hour = date("H", time());
-            $time = date('Y-m-d H:i:s', time());
+            $minute = date("m",time());
+            if($minute <= 15){
+                $minute = '00';
+            }else if($minute >= 45){
+                $minute = '00';
+                $hour++;
+            }else{
+                $minute = '30';
+            }
+            $time = date('Y-m-d', time()).' '.$hour.':'.$minute;
         }
         return $time;
     }
@@ -87,11 +98,10 @@ class functions {
         $end = false;
         $time = $this->getDateTime($end);
         $ip = $this->get_client_ip();
-        session_start();
-        $username = $_SESSION['user'];
-
-        if ($stmnt = $conn->prepare("INSERT into timeliste(username, checkIn, checkOut, ip, comment) VALUES ('" . $_SESSION['user'] . "', ?, '0000-00-00 00:00:00', ?, '')")) {
-            $stmnt->bind_param('ss', $time, $ip);
+        $user = $this->getSessionName();
+        
+        if ($stmnt = $conn->prepare("INSERT into timeliste(username, checkIn, checkOut, ip, comment) VALUES (?, ?, '0000-00-00 00:00:00', ?, '')")) {
+            $stmnt->bind_param('sss', $user, $time, $ip);
             $stmnt->execute();
             $stmnt->close();
             header('location:../registration_success.php');
@@ -103,15 +113,11 @@ class functions {
     function endTime($conn) {
         $check = $this->getDateTime(true);
         $time = $this->getDateTime(false);
-        session_start();
         $comment = $_POST['comment'];
-        echo $check;
-        echo $comment;
-        echo $time;
-        echo $_SESSION['user'];
+        $user = $this->getSessionName();
 
-        if ($stmnt = $conn->prepare("UPDATE timeliste set checkOut = ?, comment = ? where username = '" . $_SESSION['user'] . "' and DATE(checkIn) = ?")) {
-            $stmnt->bind_param('sss', $time, $comment, $check);
+        if ($stmnt = $conn->prepare("UPDATE timeliste set checkOut = ?, comment = ? where username = ? and DATE(checkIn) = ?")) {
+            $stmnt->bind_param('ssss', $time, $comment, $user, $check);
             $stmnt->execute();
             $stmnt->close();
             header('location: ../registration_success.php');
@@ -161,7 +167,7 @@ class functions {
             $hasPassword = pbkdf2('SHA256', $userPassword, $salted, 1000, 50);
             $userEmail = $_POST['userEmail'];
 
-            if (($this->checkUser($userName, $conn) == false && ($stmnt2 = $conn->prepare("insert into user (username, password, salt, email, status) values(?, ?, ?, ?, 0);")))) {
+            if (($this->checkUser($userName, $conn) == false && ($stmnt2 = $conn->prepare("insert into user (username, password, salt, email, status) values(?, ?, ?, ?, 0)")))) {
                 $stmnt2->bind_param('ssss', $userName, $hasPassword, $salted, $userEmail);
                 $stmnt2->execute();
                 $stmnt2->close();
@@ -176,21 +182,27 @@ class functions {
 
     function getUserTime($conn) {
         $array = array();
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        $name = $_SESSION['user'];
-        if (($stmnt = $conn->prepare("select checkIn, checkOut from timeliste where username ='" . $name . "';"))) {
+        $name = $this->getSessionName();
+        if (($stmnt = $conn->prepare("select checkIn, checkOut from timeliste where username =?"))) {
+            $stmnt-> bind_param('s',$name);
             $stmnt->execute();
             $stmnt-> bind_result($in, $out);
             $i = 0;
+            $total = 0;
+            $this->getDateTime(false);
             while($stmnt ->fetch()){
-                $array[$i] = "Checkin: ".$in." checkout: ".$out;
+                $timestamp1 = strtotime($in);
+                $timestamp2 = strtotime($out);
+                $diff = $timestamp2 - $timestamp1;
+                $total += $diff;
+                //viser 1 time for mye, hvorfor?
+                $worktime = date("H:i",$diff-3600);
+                $array[$i] = "Checkin: ".$in." checkout: ".$out." med ".$worktime." timer jobbet.";
                 $i++;
             }
+            $array[$i] = "Du har totalt jobbet ".date("H",$total -3600)." timer av 455 timer.";
             $stmnt -> close();
             return $array;
         }
     }
-
 }

@@ -14,6 +14,7 @@ if (!isset($_SESSION['user'])) { //&& (strpos(get_client_ip(), '158.38') !== FAL
         <h1>Oversikt over dine timer</h1>
         <ul>
         <?php
+        
         $array = getTimeUser();
         
         foreach ($array as $a) {
