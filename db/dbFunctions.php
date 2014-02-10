@@ -102,7 +102,7 @@ class functions {
         $ip = $this->get_client_ip();
         $user = $this->getSessionName();
         
-        if ($stmnt = $conn->prepare("INSERT into test_timeliste(username, checkIn, checkOut, ip, comment) VALUES (?, ?, '0000-00-00 00:00:00', ?, '')")) {
+        if ($stmnt = $conn->prepare("INSERT into timeliste(username, checkIn, checkOut, ip, comment) VALUES (?, ?, '0000-00-00 00:00:00', ?, '')")) {
             $stmnt->bind_param('sss', $user, $time, $ip);
             $stmnt->execute();
             $stmnt->close();
@@ -118,7 +118,7 @@ class functions {
         $comment = $_POST['comment'];
         $user = $this->getSessionName();
 
-        if ($stmnt = $conn->prepare("UPDATE test_timeliste set checkOut = ?, comment = ? where username = ? and DATE(checkIn) = ?")) {
+        if ($stmnt = $conn->prepare("UPDATE timeliste set checkOut = ?, comment = ? where username = ? and DATE(checkIn) = ?")) {
             $stmnt->bind_param('ssss', $time, $comment, $user, $check);
             $stmnt->execute();
             $stmnt->close();
