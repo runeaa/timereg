@@ -48,16 +48,17 @@ include './include/header.php';
     </div>
 
     <div class ="col-lg-4">
-        <br>
+        <h4>Start dagen med å klokk inn.</h4>
         <form method="post" action="db/dbNavigator.php">
             <input type="hidden" name="action" value="startTime" />
             <button type="submit" name="send" class="btn btn-default btn-lg"> Klokk inn</button>
         </form>
     </div>
     <div class="col-lg-4">
+        <h4>Ferdig for dagen? Skriv hva du har gjort, og klokk ut.</h4>
         <form method="post" action="db/dbNavigator.php">
             <input type="hidden" name="action" value="endTime" />
-            <input type="text" class="form-control" name="comment" placeholder="Kommentar">
+            <textarea class="form-control" name="comment" placeholder="Kommentar" required></textarea>
             <br>
             <button type="submit" name="send" class="btn btn-default">Klokk ut</button>
 

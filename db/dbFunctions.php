@@ -1,4 +1,5 @@
 <?php
+
 header("Content-type: text/html; charset=utf-8");
 include_once 'password.php';
 
@@ -6,10 +7,13 @@ class functions {
 
     function connectDb($host, $user, $password, $database) {
         $conn = mysqli_connect($host, $user, $password, $database);
-        mysqli_set_charset('utf8');
+
         if ($conn->connect_errno) {
             echo'Connection to database failed, please try again later.';
             die();
+        }
+        if (!$conn->set_charset("utf8")) {
+            printf("Error loading character set utf8: %s\n", $mysqli->error);
         }
         return $conn;
     }
@@ -19,8 +23,8 @@ class functions {
     }
 
     function getSessionName() {
-        if(session_status() == PHP_SESSION_NONE){
-        session_start();
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
         }
         if (isset($_SESSION['user'])) {
             return $_SESSION['user'];
@@ -36,16 +40,16 @@ class functions {
             $time = date('Y-m-d', time());
         } else {
             $hour = date("H", time());
-            $minute = date("i",time());
-            if($minute <= 15){
+            $minute = date("i", time());
+            if ($minute <= 15) {
                 $minute = '00';
-            }else if($minute >= 45){
+            } else if ($minute >= 45) {
                 $minute = '00';
                 $hour++;
-            }else{
+            } else {
                 $minute = '30';
             }
-            $time = date('Y-m-d', time()).' '.$hour.':'.$minute;
+            $time = date('Y-m-d', time()) . ' ' . $hour . ':' . $minute;
         }
         return $time;
     }
@@ -84,7 +88,7 @@ class functions {
                 if ($pass == $inputPass) {
                     session_start();
                     $_SESSION['user'] = $userName;
-                    if($status == 1){
+                    if ($status == 1) {
                         $_SESSION['status'] = 1;
                     }
                     header('location: ../login_success.php');
@@ -102,7 +106,7 @@ class functions {
         $time = $this->getDateTime(false);
         $ip = $this->get_client_ip();
         $user = $this->getSessionName();
-        
+
         if ($stmnt = $conn->prepare("INSERT into timeliste(username, checkIn, checkOut, ip, comment) VALUES (?, ?, '0000-00-00 00:00:00', ?, '')")) {
             $stmnt->bind_param('sss', $user, $time, $ip);
             $stmnt->execute();
@@ -187,25 +191,30 @@ class functions {
         $array = array();
         $name = $this->getSessionName();
         if (($stmnt = $conn->prepare("select checkIn, checkOut from timeliste where username =?"))) {
-            $stmnt-> bind_param('s',$name);
+            $stmnt->bind_param('s', $name);
             $stmnt->execute();
-            $stmnt-> bind_result($in, $out);
+            $stmnt->bind_result($in, $out);
             $i = 0;
             $total = 0;
             $this->getDateTime(false);
-            while($stmnt ->fetch()){
+            while ($stmnt->fetch()) {
                 $timestamp1 = strtotime($in);
                 $timestamp2 = strtotime($out);
-                $diff = $timestamp2 - $timestamp1;
+                if ($timestamp2 != 1391986800) {
+                    $diff = $timestamp2 - $timestamp1;
+                } else {
+                    $diff = 0;
+                }
                 $total += $diff;
                 //viser 1 time for mye, hvorfor?
-                $worktime = date("H:i",$diff-3600);
-                $array[$i] = "Checkin: ".$in." checkout: ".$out." med ".$worktime." timer jobbet.";
+                $worktime = date("H:i", $diff - 3600);
+                $array[$i] = "Checkin: " . $in . " checkout: " . $out . " med " . $worktime . " timer jobbet.";
                 $i++;
             }
-            $array[$i] = "Du har totalt jobbet ".date("H",$total -3600)." timer av 455 timer.";
-            $stmnt -> close();
+            $array[$i] = "Du har totalt jobbet " . date("H", $total - 3600) . " timer av 455 timer.";
+            $stmnt->close();
             return $array;
         }
     }
+
 }
