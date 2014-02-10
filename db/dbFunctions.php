@@ -1,11 +1,12 @@
 <?php
-
+header("Content-type: text/html; charset=utf-8");
 include_once 'password.php';
 
 class functions {
 
     function connectDb($host, $user, $password, $database) {
         $conn = mysqli_connect($host, $user, $password, $database);
+        mysqli_set_charset('utf8');
         if ($conn->connect_errno) {
             echo'Connection to database failed, please try again later.';
             die();
