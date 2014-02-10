@@ -17,7 +17,7 @@ function checkLogin() {
 
 <html>
     <head>
-        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         
         <link href="res/dist/css/bootstrap.css" rel="stylesheet">
         <link rel="icon" href="res/icon/favicon.ico" type="image/x-icon">
