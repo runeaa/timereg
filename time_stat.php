@@ -33,11 +33,18 @@ if (isset($_SESSION['status'])) {
         </ul>
     </div>
     <div class="col-lg-4">
+        <form class="form-horizontal" role="form" id="login" method="post" action="db/dbNavigator.php">
+                <input type="hidden" name="action" value="writeToFile" />
+                <button type="submit" name="submit" class="btn btn-default"> Write to file</button>
+                </table>
+            </form>
+        
         <h3>Utvidelser</h3>
         <p>Foreløpig viser denne siden en enkel oversikt over hvor mye du har jobbet.
             Den vil bli utvidet på et senere tidspunkt.</p>
 
     </div>
+    
 
 
 </div>

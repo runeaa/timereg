@@ -211,10 +211,33 @@ class functions {
                 $array[$i] = "Checkin: " . $in . " checkout: " . $out . " med " . $worktime . " timer jobbet.";
                 $i++;
             }
-            $array[$i] = "Du har totalt jobbet " . date("H", $total - 3600) . " timer av 455 timer.";
+            $array[$i] = "Du har totalt jobbet " .$this->calculateTime($total)." av 455 timer";//. gmdate("H:i", 311400 - 3600) . " timer av 455 timer.";
             $stmnt->close();
             return $array;
         }
+    }
+    
+    function writeToText($conn){
+        $fileName = date('d-m-Y').".txt";
+        $fh = fopen($fileName, 'w') or die("cant open file");
+        $stringData = $this->getUserTime($conn);
+        echo 'Er inne i wrtite text';
+        foreach ($stringData as $text){
+            fwrite($fh, $text."\n");
+        }
+        fclose($fh);
+//       header('location: ../time_stat.php');
+
+    }
+    
+    function calculateTime($seconds){
+        $seconds -= 3600;
+        $hour = ( $seconds / 60) / 60;
+        $min = ($hour - (int) $hour) * 60;
+        $hour = (int) $hour;
+        $min = (int) $min;
+        $time = $hour." timer og ".$min." minutter";
+        return $time;
     }
 
 }

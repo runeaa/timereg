@@ -38,6 +38,12 @@ if (isset($_POST['action'])) {
         $a ->getPassword($b);
         $a -> closeDb($b);
         break;
+    
+    case 'writeToFile':
+        $a = new functions();
+        $b = $a -> connectDb($host, $user, $password, $database);
+        $a -> writeToText($b);
+        $a -> closeDb($b);
     }
 }
 
